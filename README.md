@@ -1,5 +1,5 @@
 # conndb
-Connects Python to database.
+Connect Python to database using a Java properties file for configuration.
 
 ## Quickstart
 Clone this repo somewhere and save the path.
@@ -29,7 +29,7 @@ conn = connect_postgres("/home/adam/config/test.properties")
 ```
 
 ## Notes
-Your editor may flag the import with a warning and say that it can't import the module, but don't worry, it can.
+Your editor may flag the import with a warning and say that it is unable to import the module, but don't worry, it is wrong.
 
 Your properties file must have a host, port, dbname, username, and password. For example, the parsing logic/regex expects something like this, but dropping the 'db' works too:
 ```properties
