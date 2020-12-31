@@ -21,15 +21,16 @@ def connect_postgres(props_path):
     delim = "="
     props = {kv.split(delim)[0]: kv.split(delim)[1] for kv in props if delim in kv}
     print(f"Property keys: {', '.join(props.keys())}")
-    config = {
-        "dbhost": r"(?i)host",
-        "dbport": r"(?i)port",
-        "dbname": r"(?i)(?<!user)(?<!user[-_\s])name",
-        "dbuser": r"(?i)user",
-        "dbpass": r"(?i)pass"
-    }
-    reqs = list(config.keys())
+
     print("Matching property keys to db connection requirements...")
+    reqs = ["dbhost", "dbport", "dbname", "dbuser", "dbpass"]
+    config = {
+        reqs[0]: r"(?i)host",
+        reqs[1]: r"(?i)port",
+        reqs[2]: r"(?i)(?<!user)(?<!user[-_\s])name",
+        reqs[3]: r"(?i)user",
+        reqs[4]: r"(?i)pass"
+    }
     for prop in props:
         for req in reqs:
             pattern = config[req]
@@ -40,13 +41,16 @@ def connect_postgres(props_path):
         continue
     if reqs:
         raise ValueError(f"No match for required config key: {', '.join(reqs)}")
+    else:
+        reqs = list(config.keys())
+
     print("Connecting to db...")
     conn = psycopg2.connect(
-        host=config["dbhost"],
-        port=config["dbport"],
-        database=config["dbname"],
-        user=config["dbuser"],
-        password=config["dbpass"]
+        host=config[reqs[0]],
+        port=config[reqs[1]],
+        database=config[reqs[2]],
+        user=config[reqs[3]],
+        password=config[reqs[4]]
     )
     print("Connection established!")
 
