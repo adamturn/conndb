@@ -28,8 +28,8 @@ def connect_postgres(props_path):
         "dbuser": r"(?i)user",
         "dbpass": r"(?i)pass"
     }
-    print("Matching property keys to db connection requirements...")
     reqs = list(config.keys())
+    print("Matching property keys to db connection requirements...")
     for prop in props:
         for req in reqs:
             pattern = config[req]
