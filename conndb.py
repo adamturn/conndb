@@ -13,44 +13,46 @@ def connect_postgres(props_path):
     """Connects to Postgres and returns active psycopg2 connection object.
 
     Args:
-        props_path: path to Java properties file
+        props_path: path to Java properties file with db config
     """
-    print("Parsing db properties...")
+    print("Parsing db config properties...")
     with open(props_path, "r") as f:
         props = f.read().split("\n")
     delim = "="
     props = {kv.split(delim)[0]: kv.split(delim)[1] for kv in props if delim in kv}
-    print(f"Property keys: {', '.join(props.keys())}")
+    print("Property keys:", ", ".join(props.keys()))
 
     print("Matching property keys to db connection requirements...")
-    reqs = ["dbhost", "dbport", "dbname", "dbuser", "dbpass"]
-    config = {
-        reqs[0]: r"(?i)host",
-        reqs[1]: r"(?i)port",
-        reqs[2]: r"(?i)(?<!user)(?<!user[-_\s])name",
-        reqs[3]: r"(?i)user",
-        reqs[4]: r"(?i)pass"
-    }
+    reqs = (
+        ("dbhost", r"(?i)host"),
+        ("dbport", r"(?i)port"), 
+        ("dbname", r"(?i)(?<!user)(?<!user[-_\s])name"),
+        ("dbuser", r"(?i)user"), 
+        ("dbpass", r"(?i)pass")
+    )
+    cfgkeys = [req[0] for req in reqs]
+    config = dict.fromkeys(cfgkeys)
     for prop in props:
         for req in reqs:
-            pattern = config[req]
+            cfgkey = req[0]
+            pattern = req[1]
             if re.search(pattern, string=prop):
-                config[req] = props[prop]
-                reqs.remove(req)
+                config[cfgkey] = props[prop]
+                cfgkeys.remove(cfgkey)
             continue
         continue
-    if reqs:
-        raise ValueError(f"No match for required config key: {', '.join(reqs)}")
+    if cfgkeys:
+        raise ValueError("No match for required config key: " + ", ".join(cfgkeys))
     else:
-        reqs = list(config.keys())
+        cfgkeys = tuple(config.keys())
 
     print("Connecting to db...")
     conn = psycopg2.connect(
-        host=config[reqs[0]],
-        port=config[reqs[1]],
-        database=config[reqs[2]],
-        user=config[reqs[3]],
-        password=config[reqs[4]]
+        host=config[cfgkeys[0]],
+        port=config[cfgkeys[1]],
+        database=config[cfgkeys[2]],
+        user=config[cfgkeys[3]],
+        password=config[cfgkeys[4]]
     )
     print("Connection established!")
 

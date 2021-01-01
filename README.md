@@ -12,7 +12,7 @@ Example path:
 ```
 /home/adam/github/adamturn/conndb
 ```
-Activate virtual environment and install dependencies.
+Activate virtual environment and install dependencies (psycopg2).
 ```shell
 $ conda activate hack
 (hack)$ python -m pip install --upgrade -r requirements.txt
@@ -25,7 +25,7 @@ import sys
 sys.path.append("/home/adam/github/adamturn/conndb")
 from conndb import connect_postgres
 
-conn = connect_postgres("/home/adam/config/test.properties")
+conn = connect_postgres("/home/adam/config/pg-test.properties")
 ```
 
 ## Notes
