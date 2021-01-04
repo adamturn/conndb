@@ -26,7 +26,7 @@ def connect_postgres(props_path):
     reqs = (
         ("dbhost", r"(?i)host"),
         ("dbport", r"(?i)port"), 
-        ("dbname", r"(?i)(?<!user)(?<!user[-_\s])name"),
+        ("dbname", r"(?i)(?<!user|host)(?<!(user|host)[-_\s])name"),
         ("dbuser", r"(?i)user"), 
         ("dbpass", r"(?i)pass")
     )
