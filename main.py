@@ -23,36 +23,34 @@ def connect_postgres(props_path):
     print("Property keys:", ", ".join(props.keys()))
 
     print("Matching property keys to db connection requirements...")
-    reqs = (
-        ("dbhost", r"(?i)host"),
-        ("dbport", r"(?i)port"), 
-        ("dbname", r"(?i)(?<!user|host)(?<!(user|host)[-_\s])name"),
-        ("dbuser", r"(?i)user"), 
-        ("dbpass", r"(?i)pass")
-    )
-    cfgkeys = [req[0] for req in reqs]
-    config = dict.fromkeys(cfgkeys)
+    reqs = {
+        "dbhost": r"(?i)host",
+        "dbport": r"(?i)port",
+        "dbname": r"(?i)(?<!user|host)(?<!(user|host)[-_\s])name",
+        "dbuser": r"(?i)user", 
+        "dbpass": r"(?i)pass"
+    }
+    cfgkeys = list(reqs.keys())
+    cfg = dict.fromkeys(cfgkeys)
     for prop in props:
-        for req in reqs:
-            cfgkey = req[0]
-            pattern = req[1]
+        for cfgkey in cfgkeys:
+            pattern = reqs[cfgkey]
             if re.search(pattern, string=prop):
-                config[cfgkey] = props[prop]
+                cfg[cfgkey] = props[prop]
                 cfgkeys.remove(cfgkey)
-            continue
         continue
     if cfgkeys:
         raise ValueError("No match for required config key: " + ", ".join(cfgkeys))
     else:
-        cfgkeys = tuple(config.keys())
+        cfgkeys = tuple(cfg.keys())
 
     print("Connecting to db...")
     conn = psycopg2.connect(
-        host=config[cfgkeys[0]],
-        port=config[cfgkeys[1]],
-        database=config[cfgkeys[2]],
-        user=config[cfgkeys[3]],
-        password=config[cfgkeys[4]]
+        host=cfg[cfgkeys[0]],
+        port=cfg[cfgkeys[1]],
+        database=cfg[cfgkeys[2]],
+        user=cfg[cfgkeys[3]],
+        password=cfg[cfgkeys[4]]
     )
     print("Connection established!")
 

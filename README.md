@@ -1,37 +1,24 @@
 # conndb
 Connect Python to database using a Java properties file for configuration.
 
-## Quickstart
-Clone this repo somewhere and save the path.
-```shell
-$ cd ~/github/adamturn
-$ git clone https://github.com/adamturn/conndb.git && cd conndb
-$ pwd
+## Container Quickstart
+Add the following command to your Dockerfile:
+```dockerfile
+RUN cd /app/src &&
+    mkdir github github/adamturn &&
+    git clone https://github.com/adamturn/conndb.git github/adamturn &&
+    pip install --upgrade -r github/adamturn/conndb/requirements.txt
 ```
-Example path:
-```
-/home/adam/github/adamturn/conndb
-```
-Activate virtual environment and install dependencies (psycopg2).
-```shell
-$ conda activate hack
-(hack)$ python -m pip install --upgrade -r requirements.txt
-```
+
 Example import:
 ```python
-# standard library
-import sys
-# local modules
-sys.path.append("/home/adam/github/adamturn/conndb")
-from conndb import connect_postgres
+from github.adamturn.conndb.main import connect_postgres
 
-conn = connect_postgres("/home/adam/config/pg-test.properties")
+conn = connect_postgres("/app/cfg/pg-test.properties")
 ```
 
-## Notes
-Your editor may flag the import with a warning and say that it is unable to import the module, but don't worry, it is wrong.
-
-Your properties file must have a host, port, dbname, username, and password. For example, the parsing logic/regex expects something like this, but dropping the 'db' works too:
+## Requirements
+Your Java properties file must define a host, port, dbname, username, and password. For example, the parsing logic/regex expects something like this, but dropping the 'db' works too:
 ```properties
 dbhost=127.0.0.1
 dbport=5432
