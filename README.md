@@ -7,7 +7,7 @@ Add the following command to your Dockerfile:
 RUN cd /app/src &&
     mkdir github github/adamturn &&
     git clone https://github.com/adamturn/conndb.git github/adamturn &&
-    pip install --upgrade -r github/adamturn/conndb/requirements.txt
+    pip install --no-cache-dir --upgrade -r github/adamturn/conndb/requirements.txt
 ```
 
 Example import:
