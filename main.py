@@ -38,6 +38,7 @@ def connect_postgres(props_path):
             if re.search(pattern, string=prop):
                 cfg[cfgkey] = props[prop]
                 cfgkeys.remove(cfgkey)
+            continue
         continue
     if cfgkeys:
         raise ValueError("No match for required config key: " + ", ".join(cfgkeys))
